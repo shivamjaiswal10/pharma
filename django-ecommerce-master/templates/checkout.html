@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div id="log"></div>
+<script>
+function validateForm() {
+ {
+var checkBox = document.getElementById("use_default_shipping");
+  var x = document.forms["myForm"]["customer_name"].value;
+  if (checkBox.checked == false){
+  if (x == "" || x == null) {
+     alert(" Easy "+ checkBox.checked);
+    return false;
+  }
+    var val = document.forms["myForm"]["customer_mobile"].value;
+
+if (/^\d{10}$/.test(val)) {
+    // value is ok, use it
+} else {
+    alert("Please check number again")
+    return false
+}
+
+var address = document.forms["myForm"]["shipping_address"].value;
+  if (address == null) {
+    alert("Please enter address");
+    return false;
+  }
+}}
+
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+  <main >
+    <div class="container wow fadeIn">
+      <h2 class="my-5 h2 text-center">Checkout form</h2>
+      <div class="row">
+        <div class="col-md-8 mb-4">
+          <div class="card">
+            <form name="myForm" method="POST" class="card-body" onsubmit="return validateForm()">
+              {% csrf_token %}
+
+              <h3>Shipping address</h3>
+
+              <div class='hideable_shipping_form'>
+
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='customer name' id='customer_name' name='customer_name' class='form-control' />
+                  <label for="customer_name" class="">Name</label>
+                </div>
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='Mobile' id='customer_mobile' name='customer_mobile' class='form-control' />
+                  <label for="customer_mobile" class="">Mobile No.</label>
+                </div>
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='1234 Main St' id='shipping_address' name='shipping_address' class='form-control' />
+                  <label for="shipping_address" class="">Address</label>
+                </div>
+
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='Apartment or suite' id='shipping_address2' name='shipping_address2' class='form-control' />
+                  <label for="shipping_address2" class="">Address part (optional)</label>
+                </div>
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='...aliganj' id='locality_address' name='locality_address' class='form-control' />
+                  <label for="locality_address" class="">Locality</label>
+                </div>
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='..near chowki' id='landmark_address' name='landmark_address' class='form-control' />
+                  <label for="landmark_address" class="">Landmark</label>
+                </div>
+
+                <div class="md-form mb-5">
+                  <input type='text' placeholder='Lucknow' id='city_address' name='city_address' class='form-control'
+                  value="Lucknow" readonly/>
+                  <label for="city_address" class="">City(optional)</label>
+                </div>
+
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="set_default_shipping" id="set_default_shipping" value="off">
+                  <label class="custom-control-label" for="set_default_shipping">Save as default shipping address</label>
+                </div>
+                    </div>
+                {% if default_shipping_address %}
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="use_default_shipping" id="use_default_shipping" value="true">
+                <input type="hidden" value="false" id="use_default_shipping" value="false">
+
+                <label class="custom-control-label" for="use_default_shipping">Use default shipping address: {{ default_shipping_address.street_address|truncatechars:10 }}</label>
+              </div>
+
+              {% endif %}
+
+
+
+
+
+              <hr>
+
+
+              <h3>Payment option</h3>
+
+              <div class="d-block my-3">
+               <h5>We accept only Cash on Delievery
+               </h5>
+                <h5>Lets build trust first
+               </h5>
+              </div>
+
+              <hr class="mb-4">
+              <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+
+            </form>
+
+          </div>
+
+        </div>
+
+        <div class="col-md-4 mb-4">
+          {% include "order_snippet.html" %}
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+var hideable_shipping_form = $('.hideable_shipping_form');
+var hideable_billing_form = $('.hideable_billing_form');
+
+var use_default_shipping = document.querySelector("input[name=use_default_shipping]");
+var use_default_billing = document.querySelector("input[name=use_default_billing]");
+
+use_default_shipping.addEventListener('change', function() {
+  if (this.checked) {
+    hideable_shipping_form.hide();
+    document.getElementById('use_default_shipping').checked = true
+  } else {
+    hideable_shipping_form.show();
+  }
+})
+
+use_default_billing.addEventListener('change', function() {
+  if (this.checked) {
+    hideable_billing_form.hide();
+  } else {
+    hideable_billing_form.show();
+  }
+})
+
+</script>
+{% endblock extra_scripts %}
